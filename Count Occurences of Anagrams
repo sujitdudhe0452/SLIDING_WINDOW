@@ -1,0 +1,46 @@
+#include <vector>
+#include <string>
+
+using namespace std;
+
+bool allZero(const vector<int>& count) {
+    for (int c : count) {
+        if (c != 0) return false;
+    }
+    return true;
+}
+
+int search(string pat, string txt) {
+    int k = pat.size();
+    vector<int> count(26, 0);
+
+    // Populate the count vector with the pattern
+    for (char ch : pat) {
+        count[ch - 'a']++;
+    }
+
+    int i = 0, j = 0;
+    int n = txt.size();
+    int result = 0;
+
+    while (j < n) {
+        // Slide the window and adjust the count array
+        if (j - i + 1 < k) {
+            // Expand the window by moving `j` to the right
+            count[txt[j] - 'a']--;
+            j++;
+        } else if (j - i + 1 == k) {
+            // Window size is equal to `k`, check the condition
+            if (allZero(count)) {
+                result++;
+            }
+
+            // Slide the window by removing the leftmost element
+            count[txt[i] - 'a']++;
+            i++;
+            j++;  // Move `j` to the right to expand the window again
+        }
+    }
+
+    return result;
+}
